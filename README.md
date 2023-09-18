@@ -1,10 +1,15 @@
-# Vimos-Python
+# Analytics for vimos
+
+## Доступные функции
+  -
+  -
+  -
 
 ## Развернуть superset через docker
 
 1. Перейдите в директорию
 ```
-cd Vimos-Python
+cd parser
 ```
 2. Склонируйте репозиторий
 ```
@@ -49,21 +54,22 @@ docker-compose -f docker-compose-non-dev.yml up
 ## Развернуть проект через docker
 9. Склонируйте репозиторий
 ```
-git clone gitlab@gitlab.grokhotov.ru:positron-it/vimos-python.git
+git clone git@github.com:xodiumx/parser.git
 ```
 10. Перейдите в директорию 
 ```
-cd parser
+cd src
 ```
 11. Создайте `.env` file
 ```
 DB_NAME=parser
 DB_HOST=db_parser
+# DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASS=admin
 
-API_KEY_SCRAPEOPS=40a6733242c0-c5dsac-46e3-96de-346753277e0edbc
+API_KEY_SCRAPEOPS=40arfsdfdsfds-c23458c-46dsae3-96ddsae-9dsac
 
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=admin
@@ -76,6 +82,20 @@ CELERY_RESULT_BACKEND=redis://redis:6379/0
 
 FLOWER_USER=admin
 FLOWER_PASSWORD=admin
+
+ELASTICSEARCH_HOST=elasticsearch
+ELASTICSEARCH_PORT=9200
+
+SMTP_HOST=smtp.mail.ru
+SMTP_PORT=465
+SMTP_USERNAME=<your@mail.com>
+SMTP_PASSWORD=<password>
+SENDER_EMAIL=<your@mail.com>
+RECEIVER_EMAIL=<your@mail.com>
+
+VIMOS_PRODUCTS_URL=<api_for_get_products>
+VIMOS_PRODUCTS_PAGES=<pagiantion>
+VIMOS_PRODUCTS_LIMIT=<limit>
 ```
 12. Создайте `TxtProxy.txt` file
 ```
@@ -92,13 +112,7 @@ DB_NAME=parser
 ```
 15. Выполните команду:
 ```
-docker-compose up -d
+docker-compose -f docker-compose-dev.yml up -d --build
 ```
 
-## Roadmap
- - Доработка парсеров saturn, leroy, obi
- - Расчет показателей после парсинга
- - Отправка информации о изменении цены на почту
- - Запуск парсеров в 7:00
- - Настройка superset 
- - Другие.
+## Пример работы и доустпные эндпоинты
