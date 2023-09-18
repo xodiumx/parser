@@ -36,10 +36,10 @@ def delete_indices_in_elastic_search() -> None:
         }
     ])
     indices = (
-        vimos_products, 
-        petrovich_products, 
-        stroyudacha_products, 
-        saturn_products,
+        'vimos_products', 
+        'petrovich_products', 
+        'stroyudacha_products', 
+        'saturn_products',
     )
     for ind in indices:
         try:
@@ -78,6 +78,7 @@ def create_indices_in_elasticsearch() -> str:
                 'name': {'type': 'text'},
                 'price': {'type': 'float'},
                 'currency': {'type': 'text'},
+                'gcode': {'type': 'text'},
                 'url': {'type': 'text'},
                 'category': {'type': 'text'},
             }
@@ -107,15 +108,14 @@ def create_documents_in_indices() -> str:
         }
     ])
 
+    # TODO: change int to constant
     for table in tables:
         data = get_todays_data(table, db_session)
         data = [
             {
                 'id': product[0],
                 'name': product[1],
-                'price': product[2],
-                'currency': product[3],
-                'url': product[4],
+                'price': product[3],
             }
             for product in data
         ]

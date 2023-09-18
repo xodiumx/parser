@@ -19,8 +19,8 @@ celery_app.autodiscover_tasks(packages=packages, force=True)
 celery_app.conf.beat_schedule = {
     'parsing': {
         'task': 'parser.tasks.run_scraper_task',
-        # 'schedule': crontab(minute=0, hour=4),
-        'schedule': crontab(minute='*/1'),
+        'schedule': crontab(minute=0, hour=4),
+        # 'schedule': crontab(minute='*/1'),
     },
     # 'vimos_products': {
     #     'task': 'parser.tasks.add_vimos_products_in_db',
@@ -29,8 +29,8 @@ celery_app.conf.beat_schedule = {
     # },
     # 'delete_elastic_indices': {
     #     'task': 'elastic.tasks.delete_indices_in_elastic_search',
-    #     'schedule': crontab(minute=39, hour=12),
-    #     # 'schedule': crontab(minute='*/1'),
+    #     # 'schedule': crontab(minute=39, hour=12),
+    #     'schedule': crontab(minute='*/1'),
     # },
     # 'create_elastic_indices': {
     #     'task': 'elastic.tasks.create_indices_in_elsatic_search',

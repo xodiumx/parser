@@ -173,12 +173,13 @@ def get_search_data(
     Формирование данных для поиска, если vimos_data меньше чем у конкурента
     то используем ее для поиска.
     """
+    # TODO: change int to constant
     if shortest_table != vimos_products:
         search_data = [
             {
                 'id': product[0],
                 'name': product[1],
-                'price': product[2],
+                'price': product[3],
             }
             for product in shorter_data
         ]
