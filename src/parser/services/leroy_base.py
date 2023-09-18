@@ -26,9 +26,7 @@ class LeroySpiderBase(Spider):
     start_urls = ['https://leroymerlin.ru/catalogue/']
 
     def __init__(self):
-        # from random import choice
-        # with open('/Users/maksimalekseev/Desktop/Dev/WORK/vimos-python/parser/TxtProxy.txt', 'r') as file:
-        #     proxies = file.read().split()
+
         self.options = uc.ChromeOptions()
         self.options.add_argument('--disable-blink-features=AutomationControlled')
         self.options.add_argument(f'User-Agent="{get_random_user_agent()}"')
@@ -36,9 +34,6 @@ class LeroySpiderBase(Spider):
             options=self.options
         )
         self.db_session = next(get_session())
-        # self.driver.proxy = {
-        #         'http': f'http://{choice(proxies)}',
-        #     }
         
     def __get_categories_urls(self) -> list[str]:
         """
@@ -51,10 +46,7 @@ class LeroySpiderBase(Spider):
 
     def start_requests(self) -> None:
         """Начало запросов."""
-        # from random import choice
-        # with open('/Users/maksimalekseev/Desktop/Dev/WORK/vimos-python/parser/TxtProxy.txt', 'r') as file:
-        #     proxies = file.read().split()
-
+        
         self.driver.get('https://leroymerlin.ru/catalogue/')
 
         WebDriverWait(self.driver, 10).until(

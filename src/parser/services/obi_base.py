@@ -1,13 +1,9 @@
 from time import sleep
+from random import choice
 
 from parser.settings import OBI_CONST
 
 from scrapy import Spider
-from scrapy import Request
-from scrapy.http.response.html import HtmlResponse
-
-from scrapy_splash import SplashRequest
-from scrapy_splash.response import SplashTextResponse
 
 from core.utils import get_random_user_agent
 from db.connect import get_session
@@ -39,16 +35,13 @@ class ObiSpiderBase(Spider):
     def __get_all_categories(self, categories) -> list[str]:
         
         all_categories = []
-
-        from random import choice
-        with open('/Users/maksimalekseev/Desktop/Dev/WORK/vimos-python/parser/TxtProxy.txt', 'r') as file:
-            proxies = file.read().split()
+        # TODO: add proxies
+        prxoies = []
 
         for url in categories:
-            
-            self.driver.proxy = {'http': f'http://{choice(proxies)}'}
+            self.driver.proxy = {'http': f'http://{choice(self.proxies)}'}
             self.driver.get(url)
-            print(self.driver.proxy)
+
             sleep(2)
             try:
                 self.driver.find_element(
@@ -99,10 +92,7 @@ class ObiSpiderBase(Spider):
             By.XPATH, OBI_CONST['xpath_category']
         )
         sub_categories = self.__get_sub_categories(categories)
-        print(len(sub_categories))
         all_categories_urls = self.__get_all_categories(sub_categories)
-        print(len(all_categories_urls))
-        print(all_categories_urls)
         
 
     def start_requests(self) -> None:
@@ -111,8 +101,3 @@ class ObiSpiderBase(Spider):
         # TODO: cookies city
         categories = self.__get_categories_urls()
         self.driver.quit()
-
-
-# click on catalog - 
-# all products on page - //a[starts-with(@href, '/products')]
-# first_level
