@@ -102,5 +102,3 @@ docker-compose up -d
  - Запуск парсеров в 7:00
  - Настройка superset 
  - Другие.
-
-## Authors and acknowledgment - [Team Positron](https://www.positron-it.ru/)
