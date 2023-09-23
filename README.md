@@ -23,6 +23,7 @@
   - Настройка `selenium` в `docker`
   - Построение аналитических `dashboard`-ов
   - Настройка `CI/CD`
+  - Настройка `Airflow`
 
 ## Развернуть superset через docker
 
@@ -133,5 +134,40 @@ DB_NAME=parser
 ```
 docker-compose -f docker-compose-dev.yml up -d --build
 ```
+
+## Запуск Airflow
+
+16. Создайте `.env` file в директории `airflow`
+```
+cd airflow
+```
+```
+DB_NAME=airflow
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=admin
+
+AIRFLOW_FERNET_KEY='46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho='
+AIRFLOW_SECRET_KEY='a25mQ1FHTUh3MnFRSk5KMEIyVVU2YmN0VGRyYTVXY08='
+AIRFLOW_EXECUTOR=CeleryExecutor
+
+AIRFLOW_DATABASE_NAME=airflow
+AIRFLOW_DATABASE_USERNAME=postgres
+AIRFLOW_DATABASE_PASSWORD=admin
+
+AIRFLOW_USERNAME=admin
+AIRFLOW_PASSWORD=admin
+AIRFLOW_LOAD_EXAMPLES=no
+AIRFLOW_EMAIL=admin@example.com
+
+AIRFLOW_WEBSERVER_HOST=airflow
+AIRFLOW_WEBSERVER_PORT=8080
+```
+17. Выполните команду:
+```
+docker-compose up -d
+```
+
+`DAG-и` находятся в директории `src/dags`
 
 ## Пример работы и доустпные эндпоинты
