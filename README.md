@@ -48,39 +48,73 @@ x-superset-image: &superset-image apache/superset:2.1.0
 networks:
   - own_network
 ```
-5. У контейнера `superset` необходимо добавить в `networks`
+6. У контейнера `superset` необходимо добавить в `networks`
 ```
 - parser_network
 ```
-6. В конце файла `docker-compose-non-dev.yml` добавить
+7. В конце файла `docker-compose-non-dev.yml` добавить
 ```
 networks:
   parser_network:
   own_network:
 ```
-7. В директории `superset/docker/pythonpath_dev` в файле `superset_config.py` добавить
+8. В директории `superset/docker/pythonpath_dev` в файле `superset_config.py` добавить
 ```
 LANGUAGES = {
     "en": {"flag": "us", "name": "English"},
     "ru": {"flag": "ru", "name": "Russian"},
 }
 ```
-8. Выполните команды
+9. Выполните команды
 ```
 docker-compose -f docker-compose-non-dev.yml pull
 docker-compose -f docker-compose-non-dev.yml up
 ```
 
+## Запуск Airflow
+
+10. Создайте `.env` file в директории `airflow`
+```
+cd airflow
+```
+```
+AIRFLOW_DB_NAME=airflow
+DB_NAME_TWO=parser
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=admin
+
+AIRFLOW_FERNET_KEY='46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho='
+AIRFLOW_SECRET_KEY='a25mQ1FHTUh3MnFRSk5KMEIyVVU2YmN0VGRyYTVXY08='
+AIRFLOW_EXECUTOR=CeleryExecutor
+
+AIRFLOW_DATABASE_NAME=airflow
+AIRFLOW_DATABASE_USERNAME=postgres
+AIRFLOW_DATABASE_PASSWORD=admin
+
+AIRFLOW_USERNAME=admin
+AIRFLOW_PASSWORD=admin
+AIRFLOW_LOAD_EXAMPLES=no
+AIRFLOW_EMAIL=admin@example.com
+
+AIRFLOW_WEBSERVER_HOST=airflow
+AIRFLOW_WEBSERVER_PORT=8080
+```
+11. Выполните команду:
+```
+docker-compose up -d
+```
+
 ## Развернуть проект через docker
-9. Склонируйте репозиторий
+12. Склонируйте репозиторий
 ```
 git clone git@github.com:xodiumx/parser.git
 ```
-10. Перейдите в директорию 
+13. Перейдите в директорию 
 ```
 cd src
 ```
-11. Создайте `.env` file
+14. Создайте `.env` file
 ```
 DB_NAME=parser
 # DB_HOST=db_parser
@@ -118,56 +152,22 @@ VIMOS_PRODUCTS_URL=<api_for_get_products>
 VIMOS_PRODUCTS_PAGES=<pagiantion>
 VIMOS_PRODUCTS_LIMIT=<limit>
 ```
-12. Создайте `TxtProxy.txt` file
+15. Создайте `TxtProxy.txt` file
 ```
 Ваши proxy в формате:
 <name:password@ip:port>
 ```
-13. Скачайте chromedriver и поместите в текущую директорию
+16. Скачайте chromedriver и поместите в текущую директорию
 ```
 https://chromedriver.chromium.org/downloads
 ```
-14. В директории `parser/docker/postgres` создайте `.env` file
+17. В директории `parser/docker/postgres` создайте `.env` file
 ```
 DB_NAME=parser
 ```
-15. Выполните команду:
+18. Выполните команду:
 ```
 docker-compose -f docker-compose-dev.yml up -d --build
-```
-
-## Запуск Airflow
-
-16. Создайте `.env` file в директории `airflow`
-```
-cd airflow
-```
-```
-AIRFLOW_DB_NAME=airflow
-DB_NAME_TWO=parser
-
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=admin
-
-AIRFLOW_FERNET_KEY='46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho='
-AIRFLOW_SECRET_KEY='a25mQ1FHTUh3MnFRSk5KMEIyVVU2YmN0VGRyYTVXY08='
-AIRFLOW_EXECUTOR=CeleryExecutor
-
-AIRFLOW_DATABASE_NAME=airflow
-AIRFLOW_DATABASE_USERNAME=postgres
-AIRFLOW_DATABASE_PASSWORD=admin
-
-AIRFLOW_USERNAME=admin
-AIRFLOW_PASSWORD=admin
-AIRFLOW_LOAD_EXAMPLES=no
-AIRFLOW_EMAIL=admin@example.com
-
-AIRFLOW_WEBSERVER_HOST=airflow
-AIRFLOW_WEBSERVER_PORT=8080
-```
-17. Выполните команду:
-```
-docker-compose up -d
 ```
 ## Пример работы и доустпные эндпоинты
 
