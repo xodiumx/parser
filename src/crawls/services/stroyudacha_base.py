@@ -6,7 +6,7 @@ from db.connect import get_session
 from db.tables import stroyudacha_products
 from scrapy import Request
 from scrapy.http.response.html import HtmlResponse
-from parser.settings import STROY_UDACHA_CONST
+from crawls.settings import STROY_UDACHA_CONST
 
 
 
@@ -43,7 +43,7 @@ class StroyudachaSpiderBase(Spider):
             STROY_UDACHA_CONST['xpath_sub_category']).getall()
     
     def __get_sub_sub_categories_urls(
-            self, response: HtmlResponse) -> list[str] | None:
+            self, response: HtmlResponse) -> list[str]:
         """
         Метод получения урлов, всех под-подкатегорий.
         url: https://stroyudacha.ru/groups/<sub_category_name>/

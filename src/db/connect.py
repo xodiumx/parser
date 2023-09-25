@@ -1,6 +1,6 @@
 # =================== Async connection =================== #
 
-from parser.settings import DATABASE
+from crawls.settings import DATABASE
 
 # from typing import AsyncGenerator
 

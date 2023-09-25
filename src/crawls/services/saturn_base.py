@@ -1,4 +1,4 @@
-from parser.settings import SATURN_CONST
+from crawls.settings import SATURN_CONST
 
 from scrapy import Spider
 from core.db_utils import create_db_objects

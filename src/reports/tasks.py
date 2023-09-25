@@ -3,7 +3,7 @@ import smtplib
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
-from parser.settings import SMTP_SETTINGS
+from crawls.settings import SMTP_SETTINGS
 
 from core.celery import celery_app
 from db.tables_analytics import (petrovich_analytics, saturn_analytics,

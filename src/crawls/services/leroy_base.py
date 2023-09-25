@@ -9,7 +9,7 @@ from core.utils import (get_pagination, get_price,
 from db.connect import get_session
 from db.tables import leroy_products
 from scrapy import Request, Spider
-from parser.settings import LEROY_CONST
+from crawls.settings import LEROY_CONST
 
 import undetected_chromedriver as uc 
 # from selenium import webdriver

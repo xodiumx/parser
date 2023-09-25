@@ -40,4 +40,4 @@ XlsxWriter==3.1.2
 Jinja2==3.1.2
 
 # Apache Airflow
-apache-airflow
+# apache-airflow==2.1.4

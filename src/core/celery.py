@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from parser.settings import (CELERY_BROKER, CELERY_RESULT_BACKEND,
+from crawls.settings import (CELERY_BROKER, CELERY_RESULT_BACKEND,
                              CELERYD_MAX_TASKS_PER_CHILD)
 
 from celery import Celery
@@ -17,11 +17,11 @@ celery_app.autodiscover_tasks(packages=packages, force=True)
 
 
 celery_app.conf.beat_schedule = {
-    'parsing': {
-        'task': 'parser.tasks.run_scraper_task',
-        'schedule': crontab(minute=0, hour=4),
-        # 'schedule': crontab(minute='*/1'),
-    },
+    # 'parsing': {
+    #     'task': 'parser.tasks.run_scraper_task',
+    #     'schedule': crontab(minute=0, hour=4),
+    #     # 'schedule': crontab(minute='*/1'),
+    # },
     # 'vimos_products': {
     #     'task': 'parser.tasks.add_vimos_products_in_db',
     #     'schedule': crontab(minute=0, hour=4),

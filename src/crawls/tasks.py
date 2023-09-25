@@ -1,13 +1,13 @@
-from parser.settings import VIMOS_PRODUCTS_URL, VIMOS_PRODUCTS_LIMIT
+from crawls.settings import VIMOS_PRODUCTS_URL, VIMOS_PRODUCTS_LIMIT
 
 import requests
 from multiprocessing import Process
 
-from parser.spiders.petrovich import PetrovichSpiderSPB
-from parser.spiders.stroydacha import StroydachaSpiderSPB
-from parser.spiders.saturn import SaturnSpiderSPB
+from crawls.spiders.petrovich import PetrovichSpiderSPB
+from crawls.spiders.stroydacha import StroydachaSpiderSPB
+from crawls.spiders.saturn import SaturnSpiderSPB
 # from parser.spiders.leroy import LeroySpiderSpbFirst
-from parser.settings import CUSTOM_SETTINGS
+from crawls.settings import CUSTOM_SETTINGS
 
 from core.db_utils import create_db_objects
 from db.connect import get_session
@@ -33,26 +33,36 @@ def run_scrapy_spiders(spider: Spider) -> None:
     crawler.crawl()
     reactor.run()
 
-
-@celery_app.task
-def run_scraper_task() -> None:
-    """Запуск всех spider-ов в нескольких процессах."""
-    petrovich = Process(target=run_scrapy_spiders, args=(PetrovichSpiderSPB,))
-    stroy_ud = Process(target=run_scrapy_spiders, args=(StroydachaSpiderSPB,))
-    saturn = Process(target=run_scrapy_spiders, args=(SaturnSpiderSPB,))
-    # leroy = Process(target=run_scrapy_spiders, args=(LeroySpiderSpbFirst,))
+# Works with raw celery
+# @celery_app.task
+# def run_scraper_task() -> None:
+#     """Запуск всех spider-ов в нескольких процессах."""
+#     # petrovich = Process(target=run_scrapy_spiders, args=(PetrovichSpiderSPB,))
+#     # stroy_ud = Process(target=run_scrapy_spiders, args=(StroydachaSpiderSPB,))
+#     # saturn = Process(target=run_scrapy_spiders, args=(SaturnSpiderSPB,))
+#     # leroy = Process(target=run_scrapy_spiders, args=(LeroySpiderSpbFirst,))
     
-    petrovich.start()
-    stroy_ud.start()
-    saturn.start()
-    # leroy.start()
+#     # petrovich.start()
+#     # stroy_ud.start()
+#     # saturn.start()
+#     # leroy.start()
 
-    petrovich.join()
-    stroy_ud.join()
-    saturn.join()
-    # leroy.join()
+#     # petrovich.join()
+#     # stroy_ud.join()
+#     # saturn.join()
+#     # leroy.join()
 
-    add_vimos_products_in_db.delay()
+#     # add_vimos_products_in_db.delay()
+
+def run_scraper_task_saturn() -> str:
+    """Запуск Saturn парсера."""
+    run_scrapy_spiders(SaturnSpiderSPB)
+    return 'Success saturn parsing'
+
+def run_scraper_task_stroyudacha() -> str:
+    """Запуск Strtoyudacha парсера."""
+    run_scrapy_spiders(StroydachaSpiderSPB)
+    return 'Success vimos parsing'
 
 
 @celery_app.task
@@ -80,10 +90,10 @@ def add_vimos_products_in_db() -> str:
     try:
         create_db_objects(vimos_products, vimos_data, db_session)
 
-        delete_indices_in_elastic_search.delay()
+        # delete_indices_in_elastic_search.delay()
         return 'Данные в таблице vimos_products успешно созданы'
     
     except Exception as err:
 
-        delete_indices_in_elastic_search.delay()
+        # delete_indices_in_elastic_search.delay()
         return f'Ошибка при заполнении таблицы vimos_products {err}'

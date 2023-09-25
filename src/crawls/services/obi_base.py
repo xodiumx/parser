@@ -1,7 +1,7 @@
 from time import sleep
 from random import choice
 
-from parser.settings import OBI_CONST
+from crawls.settings import OBI_CONST
 
 from scrapy import Spider
 

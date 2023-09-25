@@ -1,5 +1,5 @@
 from math import ceil
-from parser.settings import API_KEY_SCRAPEOPS, USER_AGENTS_ENDPOINT
+from crawls.settings import API_KEY_SCRAPEOPS, USER_AGENTS_ENDPOINT
 from random import randint
 
 import requests

@@ -1,4 +1,4 @@
-from parser.settings import ELASTICSEARCH_HOST, ELASTICSEARCH_PORT
+from crawls.settings import ELASTICSEARCH_HOST, ELASTICSEARCH_PORT
 
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
@@ -48,7 +48,7 @@ def delete_indices_in_elastic_search() -> None:
         except Exception as e:
             print(f'Ошибка при удалении индекса {ind}: {e}')
 
-    create_indices_in_elasticsearch.delay()
+    # create_indices_in_elasticsearch.delay()
     return 'Индексы успешно удалены.'
 
 
@@ -87,7 +87,7 @@ def create_indices_in_elasticsearch() -> str:
     for name in index_names:
         es_connection.indices.create(index=name, body=index_settings)
 
-    create_documents_in_indices.delay()
+    # create_documents_in_indices.delay()
     return 'Индексы успешно созданы.'
 
 
@@ -122,7 +122,7 @@ def create_documents_in_indices() -> str:
         bulk(es_connection, data, index=f'{table}')
     bulk(es_connection, vimos_data, index=f'{vimos_products}')
 
-    search_same_products.delay()
+    # search_same_products.delay()
     return 'Документы в индексах elasticsearch созданы.'
 
 
@@ -169,5 +169,5 @@ def search_same_products() -> str:
         create_db_objects(
             ANALYTICS_TABLES[competitor], product_list, db_session
         )
-    send_reports.delay()
+    # send_reports.delay()
     return 'Формирование аналитических таблиц завершено.'

@@ -9,7 +9,7 @@ from sqlalchemy.sql.schema import Table
 def create_db_objects(
         table: Table,
         data: dict,
-        db_session: AsyncSession | Session) -> None:
+        db_session: Session) -> None:
     """функция создания объектов в базе данных."""
     statement = insert(table).values(data)
 
@@ -21,7 +21,7 @@ def create_db_objects(
 
 def get_db_objects(
         table: Table,
-        db_session: AsyncSession | Session) -> list[tuple]:
+        db_session: Session) -> list[tuple]:
     """Функция получения всех объектов в таблице."""
     query = select(table)
     return db_session.execute(query).all()
@@ -29,7 +29,7 @@ def get_db_objects(
 
 def get_todays_data(
         table: Table,
-        db_session: AsyncSession | Session) -> list[tuple]:
+        db_session: Session) -> list[tuple]:
     """Функция получения данных полученых сегодня."""
     today = datetime.now(timezone.utc).date()
     query = select(table).where(table.c.created_at == today)
@@ -38,7 +38,7 @@ def get_todays_data(
 
 def delete_all_db_objects(
         table: Table,
-        db_session: AsyncSession | Session) -> None:
+        db_session: Session) -> None:
     query = delete(table)
     db_session.execute(query)
     db_session.commit()

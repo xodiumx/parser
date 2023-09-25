@@ -7,7 +7,7 @@ from core.utils import (get_pagination, get_price,
 from db.connect import get_session
 from db.tables import petrovich_products
 from scrapy import Request, Spider
-from parser.settings import PETROVICH_CONST
+from crawls.settings import PETROVICH_CONST
 
 
 class PetrovichSpiderBase(Spider):

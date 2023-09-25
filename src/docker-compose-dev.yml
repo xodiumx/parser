@@ -2,32 +2,33 @@ version: '3.8'
 
 services:
 
-  db_parser:
-    build: 
-      dockerfile: ./docker/postgres/Dockerfile
-      context: .
-    container_name: parser_db
-    restart: unless-stopped
-    volumes:
-      - db_parser:/var/lib/postgresql/data
-    env_file:
-      - ./.env
-    ports:
-      - '5432:5432'
-    networks:
-      - superset_parser_network
+  # db_parser:
+  #   build: 
+  #     dockerfile: ./docker/postgres/Dockerfile
+  #     context: .
+  #   container_name: parser_db
+  #   restart: unless-stopped
+  #   volumes:
+  #     - db_parser:/var/lib/postgresql/data
+  #   env_file:
+  #     - ./.env
+  #   ports:
+  #     - '5432:5432'
+  #   networks:
+  #     - superset_parser_network
+  #     - airflow_airflow
 
-  redis:
-    container_name: redis
-    image: redis:alpine
-    command: redis-server
-    ports:
-      - '6379:6379'
-    volumes:
-      - redis_volume:/data
-    networks:
-      - superset_parser_network
-
+  # redis:
+  #   container_name: redis
+  #   image: redis:alpine
+  #   command: redis-server
+  #   ports:
+  #     - '6379:6379'
+  #   volumes:
+  #     - redis_volume:/data
+  #   networks:
+  #     - superset_parser_network
+  
   parser:
     build: 
       dockerfile: ./docker/parser/Dockerfile
@@ -35,12 +36,13 @@ services:
     image: oxdium/parser:latest
     container_name: parser
     command: ["/parser_app/docker/parser/entrypoint.sh"]
-    depends_on:
-      - db_parser
+    # depends_on:
+    #   - db_parser
     env_file:
       - ./.env
     networks:
       - superset_parser_network
+      - airflow_airflow
 
   pgadmin:
     container_name: pgadmin4_container
@@ -49,67 +51,70 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
-    depends_on:
-      - db_parser
+    # depends_on:
+    #   - db_parser
     ports:
       - '5050:80'
     env_file:
       - ./.env
     networks:
       - superset_parser_network
+      - airflow_airflow
 
-  celery-worker:
-    container_name: celery-worker
-    image: oxdium/parser:latest
-    volumes:
-      - celery_volume:/usr/src/app/
-    depends_on:
-      - parser
-      - redis
-    command: celery -A core worker --loglevel=info -P threads --concurrency 1
-    env_file:
-      - ./.env
-    networks:
-      - superset_parser_network
+  # celery-worker:
+  #   container_name: celery-worker
+  #   image: oxdium/parser:latest
+  #   volumes:
+  #     - celery_volume:/usr/src/app/
+  #   depends_on:
+  #     - parser
+  #     - redis
+  #   command: celery -A core worker --loglevel=info -P threads --concurrency 1
+  #   env_file:
+  #     - ./.env
+  #   networks:
+  #     - superset_parser_network
 
-  celery-beat:
-    container_name: celery-beat
-    image: oxdium/parser:latest
-    volumes:
-      - celery_volume:/usr/src/app/
-    depends_on:
-      - parser
-      - redis
-    command: celery -A core beat -l info
-    env_file:
-      - ./.env
-    networks:
-      - superset_parser_network
+  # celery-beat:
+  #   container_name: celery-beat
+  #   image: oxdium/parser:latest
+  #   volumes:
+  #     - celery_volume:/usr/src/app/
+  #   depends_on:
+  #     - parser
+  #     - redis
+  #   command: celery -A core beat -l info
+  #   env_file:
+  #     - ./.env
+  #   networks:
+  #     - superset_parser_network
 
-  celery-flower:
-    container_name: celery-flower
-    image: oxdium/parser:latest
-    volumes:
-      - celery_volume:/usr/src/app/
-    depends_on:
-      - parser
-      - redis
-    ports:
-      - '5555:5555'
-    command: celery -A core flower worker --url_prefix=flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD}
-    networks:
-      - superset_parser_network
+  # celery-flower:
+  #   container_name: celery-flower
+  #   image: oxdium/parser:latest
+  #   volumes:
+  #     - celery_volume:/usr/src/app/
+  #   depends_on:
+  #     - parser
+  #     - redis
+  #   ports:
+  #     - '5555:5555'
+  #   command: celery -A core flower worker --url_prefix=flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD}
+  #   networks:
+  #     - superset_parser_network
   
   elasticsearch:
     image: elasticsearch:8.8.1
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ports:
       - '9200:9200'
       - '9300:9300'
     networks:
       - superset_parser_network
+      - airflow_airflow
 
 volumes:
   db_parser:
@@ -119,4 +124,6 @@ volumes:
 
 networks:
   superset_parser_network:
+    external: true
+  airflow_airflow:
     external: true
