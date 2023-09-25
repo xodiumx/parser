@@ -23,7 +23,7 @@
   - Настройка `selenium` в `docker`
   - Построение аналитических `dashboard`-ов
   - Настройка `CI/CD`
-  - Настройка `Airflow`
+  - Настройка `Airflow` - sensors and clearing
 
 ## Развернуть superset через docker
 
@@ -83,8 +83,9 @@ cd src
 11. Создайте `.env` file
 ```
 DB_NAME=parser
-DB_HOST=db_parser
+# DB_HOST=db_parser
 # DB_HOST=localhost
+DB_HOST=postgresql
 DB_PORT=5432
 DB_USER=postgres
 DB_PASS=admin
@@ -142,7 +143,8 @@ docker-compose -f docker-compose-dev.yml up -d --build
 cd airflow
 ```
 ```
-DB_NAME=airflow
+AIRFLOW_DB_NAME=airflow
+DB_NAME_TWO=parser
 
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=admin
@@ -167,7 +169,27 @@ AIRFLOW_WEBSERVER_PORT=8080
 ```
 docker-compose up -d
 ```
+## Пример работы и доустпные эндпоинты
 
 `DAG-и` находятся в директории `src/dags`
 
-## Пример работы и доустпные эндпоинты
+Проект работает в двух версиях:
+ 1. Таски запускаются цепочкой используя `celery` + `redis`
+ 2. Таски запускаются в `Airflow`
+
+В `airflow` настроен один `DAG` в котором выполняются задачи:
+<img width="1492" alt="dag" src="https://github.com/xodiumx/parser/assets/111197771/75e63f2c-5141-42fb-aaaa-357d77fd02a9">
+
+- Изначально база заполняется данными за текущий день
+- Затем происходит отчистка данных в базе elasticsearch для обновления данных
+- Далее создаются индексы `elasticsearch`
+- В этих индексах создаются документы, которые содержат информацию о товарах за текущий день
+- Потом наименования товаров vimos сравниваются с наименованиями товаров конкурентов
+- Далее на полученных сравнениях формируются аналитические таблицы, с вычислениями показателей отклонений цены товаров
+- И в конце данные таблицы форматируются в `xlsx` формат и отправляются на почту в виде отчетов
+
+Ниже представлена конечная схема `ETL` - процесса в виде `DAG`
+<img width="1509" alt="dag_tasks" src="https://github.com/xodiumx/parser/assets/111197771/1a24fdd8-149a-4f09-bdd6-21c2da9f2d73">
+
+#### `Airflow` доступен по `endpoint-у` - `localhost:8080`
+#### `pgAdmin` доступен по `endpoint-у` - `localhost:5050`
